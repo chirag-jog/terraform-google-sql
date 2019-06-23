@@ -32,7 +32,7 @@ locals {
 resource "google_sql_database_instance" "master" {
   depends_on = ["null_resource.dependency_getter"]
 
-  provider         = "google-beta"
+  provider         = "google"
   name             = "${var.name}"
   project          = "${var.project}"
   region           = "${var.region}"
@@ -41,14 +41,14 @@ resource "google_sql_database_instance" "master" {
   settings {
     tier                        = "${var.machine_type}"
     activation_policy           = "${var.activation_policy}"
-    authorized_gae_applications = ["${var.authorized_gae_applications}"]
+    authorized_gae_applications = "${var.authorized_gae_applications}"
     disk_autoresize             = "${var.disk_autoresize}"
 
     ip_configuration {
-      authorized_networks = ["${var.authorized_networks}"]
-      ipv4_enabled        = "${var.enable_public_internet_access}"
-      private_network     = "${var.private_network}"
-      require_ssl         = "${var.require_ssl}"
+      # authorized_networks = []
+      ipv4_enabled    = "${var.enable_public_internet_access}"
+      private_network = "${var.private_network}"
+      require_ssl     = "${var.require_ssl}"
     }
 
     location_preference {
@@ -68,9 +68,9 @@ resource "google_sql_database_instance" "master" {
       update_track = "${var.maintenance_track}"
     }
 
-    disk_size         = "${var.disk_size}"
-    disk_type         = "${var.disk_type}"
-    database_flags    = ["${var.database_flags}"]
+    disk_size = "${var.disk_size}"
+    disk_type = "${var.disk_type}"
+    # database_flags    = "${var.database_flags}"
     availability_type = "${local.actual_availability_type}"
 
     user_labels = "${var.custom_labels}"
@@ -137,7 +137,7 @@ resource "google_sql_database_instance" "failover_replica" {
     "google_sql_user.default",
   ]
 
-  provider         = "google-beta"
+  provider         = "google"
   name             = "${var.name}-failover"
   project          = "${var.project}"
   region           = "${var.region}"
@@ -155,14 +155,14 @@ resource "google_sql_database_instance" "failover_replica" {
     crash_safe_replication = true
 
     tier                        = "${var.machine_type}"
-    authorized_gae_applications = ["${var.authorized_gae_applications}"]
+    authorized_gae_applications = "${var.authorized_gae_applications}"
     disk_autoresize             = "${var.disk_autoresize}"
 
     ip_configuration {
-      authorized_networks = ["${var.authorized_networks}"]
-      ipv4_enabled        = "${var.enable_public_internet_access}"
-      private_network     = "${var.private_network}"
-      require_ssl         = "${var.require_ssl}"
+      # authorized_networks = "${var.authorized_networks}"
+      ipv4_enabled    = "${var.enable_public_internet_access}"
+      private_network = "${var.private_network}"
+      require_ssl     = "${var.require_ssl}"
     }
 
     location_preference {
@@ -170,9 +170,9 @@ resource "google_sql_database_instance" "failover_replica" {
       zone                   = "${var.mysql_failover_replica_zone}"
     }
 
-    disk_size      = "${var.disk_size}"
-    disk_type      = "${var.disk_type}"
-    database_flags = ["${var.database_flags}"]
+    disk_size = "${var.disk_size}"
+    disk_type = "${var.disk_type}"
+    # database_flags = "${var.database_flags}"
 
     user_labels = "${var.custom_labels}"
   }
@@ -201,7 +201,7 @@ resource "google_sql_database_instance" "read_replica" {
     "google_sql_user.default",
   ]
 
-  provider         = "google-beta"
+  provider         = "google"
   name             = "${var.name}-read-${count.index}"
   project          = "${var.project}"
   region           = "${var.region}"
@@ -217,14 +217,14 @@ resource "google_sql_database_instance" "read_replica" {
 
   settings {
     tier                        = "${var.machine_type}"
-    authorized_gae_applications = ["${var.authorized_gae_applications}"]
+    authorized_gae_applications = "${var.authorized_gae_applications}"
     disk_autoresize             = "${var.disk_autoresize}"
 
     ip_configuration {
-      authorized_networks = ["${var.authorized_networks}"]
-      ipv4_enabled        = "${var.enable_public_internet_access}"
-      private_network     = "${var.private_network}"
-      require_ssl         = "${var.require_ssl}"
+      # authorized_networks = "${var.authorized_networks}"
+      ipv4_enabled    = "${var.enable_public_internet_access}"
+      private_network = "${var.private_network}"
+      require_ssl     = "${var.require_ssl}"
     }
 
     location_preference {
@@ -232,9 +232,9 @@ resource "google_sql_database_instance" "read_replica" {
       zone                   = "${element(var.read_replica_zones, count.index)}"
     }
 
-    disk_size      = "${var.disk_size}"
-    disk_type      = "${var.disk_type}"
-    database_flags = ["${var.database_flags}"]
+    disk_size = "${var.disk_size}"
+    disk_type = "${var.disk_type}"
+    # database_flags = "${var.database_flags}"
 
     user_labels = "${var.custom_labels}"
   }
